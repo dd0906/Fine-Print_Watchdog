@@ -92,7 +92,7 @@ async def _request_json_once(prompt, schema):
             },
         ],
         'temperature': 0,
-        'max_tokens': 3072,
+        'max_tokens': 4096,
         'stream': True,
         'response_format': {'type': 'json_object'},
     }

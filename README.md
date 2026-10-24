@@ -1,190 +1,466 @@
-# Fine-Print Watchdog
+\# Fine-Print Watchdog
 
-## Zero-token mode (recommended for testing and deployment)
 
-The project defaults to `WATCHDOG_MODE=demo`. This mode runs deterministic, local checklist analysis and text comparison without calling Nebius, NVIDIA-hosted inference, or any external model API. **It does not consume model tokens, but it is not generative AI** and has narrower coverage than Nemotron. The interface reports demo-mode coverage so results should be treated as checklist prompts, not comprehensive legal analysis.
 
-To run locally, copy `.env.example` to `.env` (no API key is needed) and run `scripts/start_app.ps1` on Windows. For deployment, follow `DEPLOY_RENDER.md`.
+\*\*An AI-assisted tool for reviewing contracts, identifying potential risks, and managing important document details.\*\*
 
-Fine-Print Watchdog is an AI-assisted document review prototype for surfacing
-potential contract concerns, comparing two versions, masking selected sensitive
-patterns before hosted inference, estimating loan cash-flow costs, extracting
-explicit deadline candidates, and matching document keywords to a curated India
-Policy Lens catalogue.
 
-**Hackathon inference path:** Nebius Token Factory hosts the inference API, and
-the app is configured to call NVIDIA's open Nemotron 3.5 Lightning model through
-its OpenAI-compatible Chat Completions endpoint. Token Factory makes hosted Nemotron inference available without bundling model
-weights or running a separate GPU inference server inside the application
-container. This is an architectural benefit, not a measured latency/cost claim.
-Verify the working runtime call with a valid Nebius API key before submitting
-the live demo. The app retains a generic OpenAI-compatible provider fallback
-for local/testing use when `NEBIUS_API_KEY` is not set.
 
-## Quick start (Windows, Nebius AI)
+Fine-Print Watchdog is a document review application that combines AI-assisted contract analysis with document comparison, privacy protection, Indian policy references, deadline tracking, and cost estimation.
 
-Requirements: Python 3.12 recommended, Node.js 22 LTS, and Git. Docker is needed
-for the included container build but not for local development.
 
-1. Copy `.env.example` to `.env` in the project root. The default `WATCHDOG_MODE=demo` requires no API key and makes no model requests.
-2. From PowerShell, run the Windows startup script (it installs dependencies and rebuilds the frontend):
 
-   ```powershell
-   powershell.exe -ExecutionPolicy Bypass -File ".\scripts\start_app.ps1"
-   ```
+Instead of treating contract review as a single AI prompt, we built a collection of connected tools around the different tasks involved in understanding a document. The goal is to make the review process more useful, transparent, and easier to navigate.
 
-3. Open <http://127.0.0.1:8000/>.
 
-In `demo` mode, upload/review and comparison use local deterministic checklist logic and do not make model calls.
 
-### Manual development setup
+\*\*Project type:\*\* AI-powered document analysis  
 
-   ```powershell
-   cd backend
-   python -m pip install -r requirements-dev.txt
-   python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-   ```
+\*\*Status:\*\* Hackathon MVP
 
-4. In a second terminal:
 
-   ```powershell
-   cd frontend
-   npm ci
-   npm run dev
-   ```
 
-5. Open <http://127.0.0.1:5173/>.
+\## The Problem
 
-Vite proxies `/api` to FastAPI. The included scripts also provide local launch
-helpers. See `QUICKSTART_FOR_FRIEND.md` for the Windows quick-start.
 
-## Configure Nebius Token Factory (hackathon path)
 
-1. Create an API key in your Nebius Token Factory account.
-2. Put the key in the root `.env` file as `NEBIUS_API_KEY=...` (never in source
-   code, screenshots, commits, or this README).
-3. Set `WATCHDOG_MODE=hosted`.
-4. Use these defaults, or explicitly set them in `.env`:
+Contracts and financial agreements can contain important obligations, deadlines, fees, and conditions buried in lengthy text. Reviewing them manually takes time, while relying entirely on a general-purpose chatbot can make it difficult to verify findings against the original document.
 
-   ```dotenv
-   NEBIUS_BASE_URL=https://api.tokenfactory.nebius.com/v1
-   NEBIUS_MODEL=nvidia/Nemotron-3_5-Lightning
-   ```
 
-When `NEBIUS_API_KEY` is non-empty, the backend selects the Nebius settings and
-uses the Nebius key for the `Authorization: Bearer` header. It does not use the
-NVIDIA key as a substitute. The provider code omits the NVIDIA/vLLM-specific
-`chat_template_kwargs` extension on Nebius requests. Confirm a real Review and
-Compare request succeeds before publishing a live demo.
 
-If `NEBIUS_API_KEY` is blank, the app uses the generic `LLM_BASE_URL`,
-`LLM_MODEL`, and `LLM_API_KEY` settings instead. This fallback supports other
-OpenAI-compatible services and local servers. Never commit `.env`; `.env.example`
-contains empty secret fields only.
+There is also a privacy concern: documents may contain personal, financial, or confidential information that users do not want unnecessarily exposed to an external AI service.
 
-## Features
 
-- TXT/MD, text-based PDF, and DOCX extraction with source fingerprint and text inspector.
-- Chunked Nemotron review with structured findings, exact source-quote verification,
-  duplicate removal, and explicit partial-coverage reporting.
-- Privacy Shield pattern detection and selected-category, same-length redaction
-  before Review/Compare model calls. This is not guaranteed detection of every
-  sensitive value.
-- Full local extracted-text diff and optional hosted model conflict candidates
-  between two documents, with source evidence checks.
-- Loan cash-flow estimate, including flat interest and upfront fees; print-ready
-  report exports for Review, Compare, India Policy Lens, and Cost Calculator.
-- Explicit ISO-date deadline candidates and user-confirmed ICS calendar downloads.
-- Curated India Policy Lens with official-source links and keyword matches.
-- Full-height navigation drawer and selected-section persistence across refresh.
 
-## Development and tests
+Fine-Print Watchdog addresses these problems by combining document-grounded analysis with privacy masking and practical tools for reviewing important details.
 
-Install dependencies as above. From `backend/`, run:
 
-```powershell
-python -m pytest -q
+
+\## Features
+
+
+
+\### Contract Review
+
+
+
+Analyze supported documents to identify potentially concerning clauses and other details that deserve closer attention. Findings can include supporting quotations from the source document so users can check the original wording.
+
+
+
+\### Privacy Shield
+
+
+
+Integrated into the Review workflow, Privacy Shield detects selected patterns that may contain sensitive information and masks them before document text is sent to the hosted AI provider.
+
+
+
+The masking process helps reduce unnecessary exposure of selected personal or confidential details. However, detection is pattern-based and cannot guarantee complete anonymization.
+
+
+
+\### Document Comparison
+
+
+
+Compare two document versions to identify textual changes and potential inconsistencies. The application combines text comparison with AI-assisted analysis to help users focus on changes that may need further investigation.
+
+
+
+\### India Policy Lens
+
+
+
+Explore a curated collection of Indian policy and legal references. The application matches document keywords against relevant entries and provides links to official sources where available.
+
+
+
+\### Deadline Tracker
+
+
+
+Identify potential deadlines written in supported date formats and export calendar events for dates that have been extracted and reviewed.
+
+
+
+\### Cost Calculator
+
+
+
+Estimate loan repayments, interest, upfront fees, and effective annual borrowing costs using the calculator's defined assumptions.
+
+
+
+\### Reports and Exports
+
+
+
+Generate reports from supported workflows and export calendar events for reviewed deadline candidates.
+
+
+
+\## Technology Stack
+
+
+
+| Technology | Purpose |
+
+|---|---|
+
+| React | Frontend interface |
+
+| Vite | Frontend development and production builds |
+
+| Python | Backend implementation |
+
+| FastAPI | API endpoints and application logic |
+
+| Nebius Token Factory | Hosted model inference |
+
+| NVIDIA Nemotron | AI model used through the hosted inference API |
+
+| Pytest | Backend testing |
+
+| Docker | Containerization |
+
+| Render | Deployment configuration |
+
+
+
+The frontend communicates with the FastAPI backend. When hosted inference is enabled, the backend can send selected, redacted document text to the configured inference provider.
+
+
+
+\## How It Works
+
+
+
+1\. \*\*Document input:\*\* The user uploads a supported document.
+
+2\. \*\*Text extraction:\*\* The backend extracts text for analysis.
+
+3\. \*\*Privacy processing:\*\* Selected sensitive patterns are detected and masked before hosted Review or Compare inference.
+
+4\. \*\*Analysis:\*\* Depending on the configured mode, the application uses deterministic local logic or the configured hosted model.
+
+5\. \*\*Evidence checks:\*\* Supported review workflows check whether quoted source text appears in the extracted document.
+
+6\. \*\*Results:\*\* Findings and extracted information are presented through the interface, with supported report and calendar exports.
+
+
+
+\## Design Decisions
+
+
+
+\- \*\*Evidence alongside findings:\*\* Users can inspect the original wording behind a reported concern.
+
+\- \*\*Privacy before hosted inference:\*\* Selected sensitive values are masked before extracted text is sent to the external model provider.
+
+\- \*\*Local functionality where practical:\*\* Deterministic demo logic and local text comparison provide useful functionality without requiring every operation to call a model.
+
+\- \*\*Connected workflows:\*\* Review, Compare, Policy Lens, Deadline Tracker, and Cost Calculator address different parts of document review in one application.
+
+\- \*\*Transparent limitations:\*\* The application distinguishes extracted information and model-generated interpretations from verified legal conclusions.
+
+
+
+\## Who Is It For?
+
+
+
+Fine-Print Watchdog is intended as an exploratory tool for people who regularly encounter lengthy documents, including individuals comparing contract revisions, students reviewing agreements, small teams organizing document-review tasks, and users who want to identify potential deadlines or estimate borrowing costs.
+
+
+
+The application helps users identify details worth investigating. It does not replace a lawyer, financial adviser, or other qualified professional.
+
+
+
+\## Getting Started
+
+
+
+\### Prerequisites
+
+
+
+\- Python 3.11 or another supported version
+
+\- Node.js and npm
+
+\- Git
+
+
+
+Docker is optional for local development.
+
+
+
+\### 1. Clone the Repository
+
+
+
+```bash
+
+git clone https://github.com/dd0906/Fine-Print\_Watchdog.git
+
+cd Fine-Print\_Watchdog
+
 ```
 
-From `frontend/`, run:
+
+
+\### 2. Set Up the Backend
+
+
+
+```bash
+
+cd backend
+
+python -m venv .venv
+
+```
+
+
+
+Activate the virtual environment in Windows PowerShell:
+
+
 
 ```powershell
+
+.\\.venv\\Scripts\\Activate.ps1
+
+```
+
+
+
+Install the development dependencies:
+
+
+
+```bash
+
+python -m pip install -r requirements-dev.txt
+
+```
+
+
+
+Start the backend:
+
+
+
+```bash
+
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+
+```
+
+
+
+Keep this terminal running.
+
+
+
+\### 3. Set Up the Frontend
+
+
+
+Open a second terminal at the repository root:
+
+
+
+```bash
+
+cd frontend
+
 npm ci
+
+npm run dev
+
+```
+
+
+
+Open the local URL printed by Vite, usually `http://127.0.0.1:5173/`.
+
+
+
+The development server is configured to proxy `/api` requests to the local FastAPI backend.
+
+
+
+\### 4. Configure AI Inference
+
+
+
+The application supports demo mode and hosted inference.
+
+
+
+\- \*\*Demo mode:\*\* Uses local, deterministic logic for supported review and comparison operations without making model API calls.
+
+\- \*\*Hosted mode:\*\* Uses the configured inference provider for AI-assisted review and comparison.
+
+
+
+Hosted inference requires the appropriate API credentials and configuration. Consult the backend provider configuration before enabling it.
+
+
+
+Store API keys in local environment variables or your hosting provider's secret settings. Never commit real credentials to GitHub.
+
+
+
+\## Testing
+
+
+
+\### Backend Tests
+
+
+
+From the `backend` directory:
+
+
+
+```bash
+
+python -m pytest -q
+
+```
+
+
+
+\### Frontend Production Build
+
+
+
+From the `frontend` directory:
+
+
+
+```bash
+
+npm ci
+
 npm run build
+
 ```
 
-For the Docker image, run at the repository root:
 
-```powershell
-docker build -t fine-print-watchdog:release-check .
+
+The backend tests cover application behavior, privacy handling, and provider configuration. The frontend build checks whether the production bundle can be generated successfully.
+
+
+
+\## Project Structure
+
+
+
+```text
+
+Fine-Print\_Watchdog/
+
+├── backend/
+
+│   ├── app/
+
+│   │   ├── main.py
+
+│   │   ├── core.py
+
+│   │   ├── llm.py
+
+│   │   ├── privacy.py
+
+│   │   └── policies.py
+
+│   ├── tests/
+
+│   ├── requirements.txt
+
+│   └── requirements-dev.txt
+
+├── frontend/
+
+│   ├── public/
+
+│   ├── src/
+
+│   │   ├── main.jsx
+
+│   │   └── style.css
+
+│   ├── package.json
+
+│   └── vite.config.js
+
+├── Dockerfile
+
+├── render.yaml
+
+└── README.md
+
 ```
 
-`GET /api/health` checks application status and reports the configured model;
-it does **not** verify that the model API is reachable. Make an actual Review
-request as an inference smoke test.
 
-## AI-assisted development
 
-Fine-Print Watchdog was developed with AI assistance for implementation,
-debugging, UI iterations, testing support, and documentation. The project owner
-reviewed and tested the resulting changes. The Watchdog mascot, logo, and favicon
-artwork were generated using ChatGPT specifically for this project, according to
-the project owner's statement. AI-generated output may not be unique; this is not
-a claim that every output is globally unique or created without assistance.
+\## Limitations and Responsible Use
 
-## Scope and limitations
 
-This is a hackathon MVP, not a complete legal platform. Quote presence is
-mechanically verified; the model's reasoning, severity, completeness, and legal
-interpretation are not. A finding is not a legal conclusion; no finding does not
-mean a contract is safe. The policy catalogue is curated and not exhaustive.
 
-Uploads are kept in process memory, not durable storage, and are cleared on
-restart/redeploy. Run one backend worker/instance. The app has no full user-account
-system or app-level rate limiter. Basic authentication in the Render template is
-a shared gate for a controlled demo, not a production identity solution. Do not
-upload confidential contracts to a shared demo.
+Fine-Print Watchdog is a hackathon prototype, not a complete legal or financial platform.
 
-Inputs are capped at 8 MB, 80 PDF pages, 120,000 extracted characters, 20 documents
-per browser session and 200 in the process. Scanned-only PDFs are rejected; OCR
-is not implemented. DOCX headers, text boxes, images, and tracked changes may be
-omitted. Chunking can split clauses. Exact quotation verification proves source
-presence, not semantic correctness.
 
-Privacy Shield detects patterns, not all possible personal information. Only
-selected detected categories are masked before hosted inference; the original
-upload still reaches the application server. Hosted mode sends redacted extracted
-passages to the selected inference provider. Use fictional samples unless you are
-authorized to share document contents with that provider.
 
-The calculator assumes simple annual flat interest, equal monthly payments in
-arrears and upfront fee withheld from disbursement. Its effective annual rate is
-a cash-flow estimate, not a statutory APR or financial recommendation.
+\- AI-generated interpretations may be incomplete or incorrect.
 
-## Architecture
+\- Verifying that a quotation appears in a document does not verify its interpretation.
 
-- `backend/app/main.py` — FastAPI endpoints, document store, orchestration.
-- `backend/app/core.py` — parsing helpers, evidence validation, calculator, diffs, ICS.
-- `backend/app/llm.py` — OpenAI-compatible streamed client, schema validation and provider selection.
-- `backend/app/privacy.py` — pattern-based detection/redaction.
-- `backend/app/policies.py` — curated India Policy Lens catalogue and match rules.
-- `backend/tests/` — backend regression and provider/privacy tests.
-- `frontend/src/` — React UI and styles.
-- `samples/` — fictional test contracts/brochure.
-- `Dockerfile`, `.dockerignore`, `render.yaml` — single-service Docker deployment setup.
+\- The absence of a finding does not mean a contract is safe.
 
-## License and third-party packages
+\- The policy catalogue is curated and is not exhaustive.
 
-The project-owner original code is offered under the MIT License in `LICENSE`,
-except where a file has a separate notice or third-party terms apply. Third-party
-packages retain their own licenses; see `THIRD_PARTY_NOTICES.md` and the license
-files provided by individual packages. NVIDIA model weights and the Nebius Token
-Factory service are governed by their respective terms; this project does not
-redistribute model weights.
+\- Privacy masking detects selected patterns and cannot guarantee complete anonymization.
 
-## References
+\- Scanned PDFs requiring OCR are not supported by the current workflow.
 
-- [Nebius Token Factory: NVIDIA Nemotron inference](https://nebius.com/services/token-factory/models/nvidia-nemotron-models-inference)
-- [Nebius Token Factory documentation](https://docs.tokenfactory.nebius.com/)
-- [NVIDIA Nemotron model family](https://huggingface.co/collections/nvidia/nemotron)
-- [Render Docker web services](https://render.com/docs/docker)
+\- Some document structures may not be fully represented in extracted text.
+
+\- Uploaded documents are held in application memory rather than durable storage and may be cleared when the application restarts or is redeployed.
+
+\- Cost estimates use simplified cash-flow assumptions and are not a substitute for professional financial advice.
+
+
+
+Users should review the original document and consult qualified professionals before making significant legal or financial decisions.
+
+
+
+\## Project Background
+
+
+
+This project explores how AI-assisted analysis and conventional software engineering can make lengthy documents easier to review.
+
+
+
+The work brings together frontend development, backend API design, document processing, privacy-aware handling of extracted text, hosted model integration, evidence validation, and automated testing.
+
+
+
+Our goal was to build a practical document-review application rather than a thin interface around a single model call.
+
+
+
+\## Repository
+
+
+
+\[Fine-Print Watchdog on GitHub](https://github.com/dd0906/Fine-Print\_Watchdog)
+

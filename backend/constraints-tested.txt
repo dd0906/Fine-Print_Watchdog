@@ -1,0 +1,11 @@
+# Direct dependency versions exercised in the packaging environment (Python 3.12/Linux).
+# Optional: pip install -r requirements-dev.txt -c constraints-tested.txt
+fastapi==0.143.0
+uvicorn==0.54.0
+python-multipart==0.0.32
+pypdf==6.10.0
+python-docx==1.2.0
+httpx==0.28.1
+python-dotenv==1.2.4
+pydantic==2.13.5
+pytest==9.1.1

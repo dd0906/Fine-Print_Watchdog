@@ -1,0 +1,62 @@
+# Git internals
+.git/
+**/.git/
+
+# Secrets: never commit real environment files
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Python environments and generated files
+.venv/
+.venv*/
+**/.venv/
+**/.venv*/
+venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Keep backend/tests/ in version control
+
+# Local backups
+backup_before_*/
+**/backup_before_*/
+*.bak
+**/*.bak
+*.backup
+**/*.backup
+*.before-*
+**/*.before-*
+*.before_*
+**/*.before_*
+*.broken-backup-*
+**/*.broken-backup-*
+
+# Frontend dependencies and generated builds
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+frontend/.vite/
+
+# Archives, logs and temporary files
+*.zip
+**/*.zip
+*.log
+**/*.log
+.DS_Store
+Thumbs.db
+~$*
+# Editor backup files
+*.backup-*
+*.backup
+*.before-*
+*.broken-backup-*

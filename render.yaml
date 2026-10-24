@@ -15,8 +15,4 @@ services:
       - key: NEBIUS_MODEL
         value: nvidia/Nemotron-3_5-Lightning
       - key: REQUIRE_ACCESS_AUTH
-        value: "true"
-      - key: WATCHDOG_AUTH_USERNAME
-        sync: false
-      - key: WATCHDOG_AUTH_PASSWORD
-        sync: false
+        value: "false"

@@ -1,8 +1,8 @@
-\# Fine-Print Watchdog
+﻿# Fine-Print Watchdog
 
 
 
-\*\*An AI-assisted tool for reviewing contracts, identifying potential risks, and managing important document details.\*\*
+**An AI-assisted tool for reviewing contracts, identifying potential risks, and managing important document details.**
 
 
 
@@ -14,13 +14,13 @@ Instead of treating contract review as a single AI prompt, we built a collection
 
 
 
-\*\*Project type:\*\* AI-powered document analysis  
+**Project type:** AI-powered document analysis
 
-\*\*Status:\*\* Hackathon MVP
+**Status:** Hackathon MVP
 
 
 
-\## The Problem
+## The Problem
 
 
 
@@ -36,11 +36,11 @@ Fine-Print Watchdog addresses these problems by combining document-grounded anal
 
 
 
-\## Features
+## Features
 
 
 
-\### Contract Review
+### Contract Review
 
 
 
@@ -48,7 +48,7 @@ Analyze supported documents to identify potentially concerning clauses and other
 
 
 
-\### Privacy Shield
+### Privacy Shield
 
 
 
@@ -60,7 +60,7 @@ The masking process helps reduce unnecessary exposure of selected personal or co
 
 
 
-\### Document Comparison
+### Document Comparison
 
 
 
@@ -68,7 +68,7 @@ Compare two document versions to identify textual changes and potential inconsis
 
 
 
-\### India Policy Lens
+### India Policy Lens
 
 
 
@@ -76,7 +76,7 @@ Explore a curated collection of Indian policy and legal references. The applicat
 
 
 
-\### Deadline Tracker
+### Deadline Tracker
 
 
 
@@ -84,7 +84,7 @@ Identify potential deadlines written in supported date formats and export calend
 
 
 
-\### Cost Calculator
+### Cost Calculator
 
 
 
@@ -92,7 +92,7 @@ Estimate loan repayments, interest, upfront fees, and effective annual borrowing
 
 
 
-\### Reports and Exports
+### Reports and Exports
 
 
 
@@ -100,7 +100,7 @@ Generate reports from supported workflows and export calendar events for reviewe
 
 
 
-\## Technology Stack
+## Technology Stack
 
 
 
@@ -132,41 +132,41 @@ The frontend communicates with the FastAPI backend. When hosted inference is ena
 
 
 
-\## How It Works
+## How It Works
 
 
 
-1\. \*\*Document input:\*\* The user uploads a supported document.
+1\. **Document input:** The user uploads a supported document.
 
-2\. \*\*Text extraction:\*\* The backend extracts text for analysis.
+2\. **Text extraction:** The backend extracts text for analysis.
 
-3\. \*\*Privacy processing:\*\* Selected sensitive patterns are detected and masked before hosted Review or Compare inference.
+3\. **Privacy processing:** Selected sensitive patterns are detected and masked before hosted Review or Compare inference.
 
-4\. \*\*Analysis:\*\* Depending on the configured mode, the application uses deterministic local logic or the configured hosted model.
+4\. **Analysis:** Depending on the configured mode, the application uses deterministic local logic or the configured hosted model.
 
-5\. \*\*Evidence checks:\*\* Supported review workflows check whether quoted source text appears in the extracted document.
+5\. **Evidence checks:** Supported review workflows check whether quoted source text appears in the extracted document.
 
-6\. \*\*Results:\*\* Findings and extracted information are presented through the interface, with supported report and calendar exports.
-
-
-
-\## Design Decisions
+6\. **Results:** Findings and extracted information are presented through the interface, with supported report and calendar exports.
 
 
 
-\- \*\*Evidence alongside findings:\*\* Users can inspect the original wording behind a reported concern.
-
-\- \*\*Privacy before hosted inference:\*\* Selected sensitive values are masked before extracted text is sent to the external model provider.
-
-\- \*\*Local functionality where practical:\*\* Deterministic demo logic and local text comparison provide useful functionality without requiring every operation to call a model.
-
-\- \*\*Connected workflows:\*\* Review, Compare, Policy Lens, Deadline Tracker, and Cost Calculator address different parts of document review in one application.
-
-\- \*\*Transparent limitations:\*\* The application distinguishes extracted information and model-generated interpretations from verified legal conclusions.
+## Design Decisions
 
 
 
-\## Who Is It For?
+- **Evidence alongside findings:** Users can inspect the original wording behind a reported concern.
+
+- **Privacy before hosted inference:** Selected sensitive values are masked before extracted text is sent to the external model provider.
+
+- **Local functionality where practical:** Deterministic demo logic and local text comparison provide useful functionality without requiring every operation to call a model.
+
+- **Connected workflows:** Review, Compare, Policy Lens, Deadline Tracker, and Cost Calculator address different parts of document review in one application.
+
+- **Transparent limitations:** The application distinguishes extracted information and model-generated interpretations from verified legal conclusions.
+
+
+
+## Who Is It For?
 
 
 
@@ -178,19 +178,19 @@ The application helps users identify details worth investigating. It does not re
 
 
 
-\## Getting Started
+## Getting Started
 
 
 
-\### Prerequisites
+### Prerequisites
 
 
 
-\- Python 3.11 or another supported version
+- Python 3.11 or another supported version
 
-\- Node.js and npm
+- Node.js and npm
 
-\- Git
+- Git
 
 
 
@@ -198,7 +198,7 @@ Docker is optional for local development.
 
 
 
-\### 1. Clone the Repository
+### 1. Clone the Repository
 
 
 
@@ -212,7 +212,7 @@ cd Fine-Print\_Watchdog
 
 
 
-\### 2. Set Up the Backend
+### 2. Set Up the Backend
 
 
 
@@ -266,7 +266,7 @@ Keep this terminal running.
 
 
 
-\### 3. Set Up the Frontend
+### 3. Set Up the Frontend
 
 
 
@@ -294,7 +294,7 @@ The development server is configured to proxy `/api` requests to the local FastA
 
 
 
-\### 4. Configure AI Inference
+### 4. Configure AI Inference
 
 
 
@@ -302,9 +302,9 @@ The application supports demo mode and hosted inference.
 
 
 
-\- \*\*Demo mode:\*\* Uses local, deterministic logic for supported review and comparison operations without making model API calls.
+- **Demo mode:** Uses local, deterministic logic for supported review and comparison operations without making model API calls.
 
-\- \*\*Hosted mode:\*\* Uses the configured inference provider for AI-assisted review and comparison.
+- **Hosted mode:** Uses the configured inference provider for AI-assisted review and comparison.
 
 
 
@@ -316,11 +316,11 @@ Store API keys in local environment variables or your hosting provider's secret 
 
 
 
-\## Testing
+## Testing
 
 
 
-\### Backend Tests
+### Backend Tests
 
 
 
@@ -336,7 +336,7 @@ python -m pytest -q
 
 
 
-\### Frontend Production Build
+### Frontend Production Build
 
 
 
@@ -358,7 +358,7 @@ The backend tests cover application behavior, privacy handling, and provider con
 
 
 
-\## Project Structure
+## Project Structure
 
 
 
@@ -366,51 +366,51 @@ The backend tests cover application behavior, privacy handling, and provider con
 
 Fine-Print\_Watchdog/
 
-├── backend/
+â”œâ”€â”€ backend/
 
-│   ├── app/
+â”‚   â”œâ”€â”€ app/
 
-│   │   ├── main.py
+â”‚   â”‚   â”œâ”€â”€ main.py
 
-│   │   ├── core.py
+â”‚   â”‚   â”œâ”€â”€ core.py
 
-│   │   ├── llm.py
+â”‚   â”‚   â”œâ”€â”€ llm.py
 
-│   │   ├── privacy.py
+â”‚   â”‚   â”œâ”€â”€ privacy.py
 
-│   │   └── policies.py
+â”‚   â”‚   â””â”€â”€ policies.py
 
-│   ├── tests/
+â”‚   â”œâ”€â”€ tests/
 
-│   ├── requirements.txt
+â”‚   â”œâ”€â”€ requirements.txt
 
-│   └── requirements-dev.txt
+â”‚   â””â”€â”€ requirements-dev.txt
 
-├── frontend/
+â”œâ”€â”€ frontend/
 
-│   ├── public/
+â”‚   â”œâ”€â”€ public/
 
-│   ├── src/
+â”‚   â”œâ”€â”€ src/
 
-│   │   ├── main.jsx
+â”‚   â”‚   â”œâ”€â”€ main.jsx
 
-│   │   └── style.css
+â”‚   â”‚   â””â”€â”€ style.css
 
-│   ├── package.json
+â”‚   â”œâ”€â”€ package.json
 
-│   └── vite.config.js
+â”‚   â””â”€â”€ vite.config.js
 
-├── Dockerfile
+â”œâ”€â”€ Dockerfile
 
-├── render.yaml
+â”œâ”€â”€ render.yaml
 
-└── README.md
+â””â”€â”€ README.md
 
 ```
 
 
 
-\## Limitations and Responsible Use
+## Limitations and Responsible Use
 
 
 
@@ -418,23 +418,23 @@ Fine-Print Watchdog is a hackathon prototype, not a complete legal or financial 
 
 
 
-\- AI-generated interpretations may be incomplete or incorrect.
+- AI-generated interpretations may be incomplete or incorrect.
 
-\- Verifying that a quotation appears in a document does not verify its interpretation.
+- Verifying that a quotation appears in a document does not verify its interpretation.
 
-\- The absence of a finding does not mean a contract is safe.
+- The absence of a finding does not mean a contract is safe.
 
-\- The policy catalogue is curated and is not exhaustive.
+- The policy catalogue is curated and is not exhaustive.
 
-\- Privacy masking detects selected patterns and cannot guarantee complete anonymization.
+- Privacy masking detects selected patterns and cannot guarantee complete anonymization.
 
-\- Scanned PDFs requiring OCR are not supported by the current workflow.
+- Scanned PDFs requiring OCR are not supported by the current workflow.
 
-\- Some document structures may not be fully represented in extracted text.
+- Some document structures may not be fully represented in extracted text.
 
-\- Uploaded documents are held in application memory rather than durable storage and may be cleared when the application restarts or is redeployed.
+- Uploaded documents are held in application memory rather than durable storage and may be cleared when the application restarts or is redeployed.
 
-\- Cost estimates use simplified cash-flow assumptions and are not a substitute for professional financial advice.
+- Cost estimates use simplified cash-flow assumptions and are not a substitute for professional financial advice.
 
 
 
@@ -442,7 +442,7 @@ Users should review the original document and consult qualified professionals be
 
 
 
-\## Project Background
+## Project Background
 
 
 
@@ -458,7 +458,7 @@ Our goal was to build a practical document-review application rather than a thin
 
 
 
-\## Repository
+## Repository
 
 
 

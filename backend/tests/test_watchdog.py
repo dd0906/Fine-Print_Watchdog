@@ -167,10 +167,7 @@ def test_protocol_parsing(monkeypatch):
         assert payload['messages'][0]['content'].startswith('/no_think')
         assert payload['stream'] is True
 
-        if llm._provider_config()['provider'] == 'nebius':
-            assert 'chat_template_kwargs' not in payload
-        else:
-            assert payload['chat_template_kwargs']['enable_thinking'] is False
+        assert payload['chat_template_kwargs']['enable_thinking'] is False
 
         events = [
             {

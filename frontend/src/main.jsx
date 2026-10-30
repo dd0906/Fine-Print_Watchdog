@@ -278,6 +278,10 @@ function App() {
   const [policyCatalogue, setPolicyCatalogue] = useState(null);
   const [policyScan, setPolicyScan] = useState(null);
   const [policySearch, setPolicySearch] = useState('');
+  const [webResearchQuery, setWebResearchQuery] = useState('');
+  const [webResearchResults, setWebResearchResults] = useState(null);
+  const [webResearchLoading, setWebResearchLoading] = useState(false);
+  const [webResearchError, setWebResearchError] = useState('');
   const [policyCategory, setPolicyCategory] = useState('All categories');
   const [privacyScan, setPrivacyScan] = useState(null);
   const [privacyScanError, setPrivacyScanError] = useState('');
@@ -453,6 +457,25 @@ function App() {
       : [...previous, category]);
     setReport(null);
     setDiff(null);
+  }
+
+  async function searchWebResearch(event) {
+    event.preventDefault();
+    const query = webResearchQuery.trim();
+    if (!query || webResearchLoading) return;
+
+    setWebResearchLoading(true);
+    setWebResearchError('');
+    setWebResearchResults(null);
+
+    try {
+      const result = await api('research', { query, max_results: 5 });
+      setWebResearchResults(result);
+    } catch (error) {
+      setWebResearchError(error.message || 'Web research failed. Please try again.');
+    } finally {
+      setWebResearchLoading(false);
+    }
   }
 
   const policyItems = policyCatalogue?.items || [];
@@ -658,6 +681,57 @@ function App() {
               <button className="button button-primary" disabled={!current || busy} onClick={scanIndianPolicies}><Icon name="landmark" size={16} />{busy ? 'Checking…' : 'Match current document'}</button>
             </div>
             <div className="policy-notice"><span className="policy-notice-icon"><Icon name="info" size={18} /></span><div><strong>Research leads, not legal conclusions</strong><p>The matcher checks extracted text for literal keywords. A match does not establish that a law applies, that a clause is unlawful, or that a document complies. The catalogue is curated and incomplete; State/UT laws, rules, Gazette notifications, amendments and sector-specific requirements may be missing.</p></div></div>
+            <section className="policy-research-panel">
+              <div className="section-heading-row">
+                <div>
+                  <h2>Research the web</h2>
+                  <p>Search for additional legal and regulatory sources using Tavily. Verify findings against official sources.</p>
+                </div>
+              </div>
+              <form onSubmit={searchWebResearch} className="policy-filter-bar">
+                <label className="field policy-search-field">
+                  <span>Research question</span>
+                  <div className="policy-search-wrap">
+                    <Icon name="search" size={16} />
+                    <input
+                      type="search"
+                      value={webResearchQuery}
+                      onChange={event => setWebResearchQuery(event.target.value)}
+                      placeholder="e.g. Indian data protection laws for businesses"
+                      required
+                    />
+                  </div>
+                </label>
+                <button
+                  className="button button-primary"
+                  type="submit"
+                  disabled={webResearchLoading || !webResearchQuery.trim()}
+                >
+                  {webResearchLoading ? 'Researching...' : 'Search the web'}
+                </button>
+              </form>
+              {webResearchError && <div className="alert alert-info" role="alert"><Icon name="alert" size={18} /><p>{webResearchError}</p></div>}
+              {webResearchLoading && <p className="inline-note">Searching for relevant sources...</p>}
+              {webResearchResults && (() => {
+                const results = Array.isArray(webResearchResults)
+                  ? webResearchResults
+                  : webResearchResults.results || webResearchResults.items || [];
+                return results.length ? (
+                  <div className="policy-list">
+                    {results.map((item, index) => (
+                      <article className="policy-card" key={item.url || item.link || index}>
+                        <h3>{item.title || item.url || item.link || `Result ${index + 1}`}</h3>
+                        <p className="policy-summary">{item.content || item.snippet || item.description || 'No summary available.'}</p>
+                        {(item.url || item.link) && <div className="policy-source-row">
+                          <span>{item.source || 'Web source'}</span>
+                          <a href={item.url || item.link} target="_blank" rel="noopener noreferrer">Open source <Icon name="chevron" size={14} /></a>
+                        </div>}
+                      </article>
+                    ))}
+                  </div>
+                ) : <EmptyState icon="search" title="No results returned" body="Try a more specific question." />;
+              })()}
+            </section>
             <div className="policy-catalogue-meta"><span><Icon name="landmark" size={15} />{policyCatalogue ? `${policyCatalogue.count} references` : 'Loading catalogue…'}</span><span>Source review date: {policyCatalogue?.checked_on || '—'}</span><span>Official government / regulator links</span></div>
 
             {policyScan && <>

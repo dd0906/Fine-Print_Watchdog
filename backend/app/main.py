@@ -20,11 +20,41 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, model_validator
 from .core import RULES, chunks, compare_text, deadline_candidates, document_deadline_candidates, cost_candidates, evidence, loan_cost, make_calendar, rule_findings, verify_candidates
 from . import llm
+from .tavily_search import search_web
+import httpx
 from .privacy import DEFAULT_CATEGORIES as DEFAULT_PRIVACY_CATEGORIES, redact_pages, scan_pages
 from .policies import CATALOGUE_VERSION, CATALOGUE_CHECKED_ON, POLICIES, catalogue_payload, match_policies
 
 app = FastAPI(title='Fine-Print Watchdog', version='1.0.0')
 logger = logging.getLogger(__name__)
+
+
+class ResearchRequest(BaseModel):
+    query: str = Field(min_length=3, max_length=500)
+    max_results: int = Field(default=5, ge=1, le=5)
+
+
+@app.post("/api/research")
+async def research(req: ResearchRequest):
+    try:
+        return await search_web(req.query, req.max_results)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except httpx.HTTPStatusError as exc:
+        logger.warning("Tavily search returned HTTP %s", exc.response.status_code)
+        raise HTTPException(
+            status_code=502,
+            detail="Tavily search failed. Check the API key, quota, and provider status.",
+        ) from exc
+    except httpx.RequestError as exc:
+        logger.warning("Tavily connection failed: %s", type(exc).__name__)
+        raise HTTPException(
+            status_code=502,
+            detail="Could not connect to Tavily. Please try again.",
+        ) from exc
+
 DOCUMENTS = {}
 STORE_LOCK = Lock()
 MAX_BYTES = 8 * 1024 * 1024
